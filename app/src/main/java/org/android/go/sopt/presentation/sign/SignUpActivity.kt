@@ -5,10 +5,8 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import org.android.go.sopt.R
-import org.android.go.sopt.data.datasource.local.GSDataStore
 import org.android.go.sopt.databinding.ActivitySignUpBinding
 import org.android.go.sopt.presentation.common.ViewModelFactory
-import org.android.go.sopt.presentation.model.UserInfo
 import org.android.go.sopt.presentation.util.extension.hideKeyboard
 import org.android.go.sopt.presentation.util.extension.showSnackBar
 
@@ -34,8 +32,7 @@ class SignUpActivity : AppCompatActivity() {
         binding.btnSignUp.setOnClickListener {
             viewModel.isValid()
             if (viewModel.isValidSign.value) {
-                GSDataStore(this).userName = viewModel.inputName.value
-                GSDataStore(this).userFavoriteSong = viewModel.inputFavoriteSong.value
+                viewModel.saveUserInfo()
                 moveToSignIn()
             } else
                 it.showSnackBar(getString(R.string.sign_up_fail_message))
@@ -46,13 +43,7 @@ class SignUpActivity : AppCompatActivity() {
         val intent = Intent(this, SignInActivity::class.java)
         with(binding) {
             intent.putExtra(
-                USER_INFO,
-                UserInfo(
-                    etSignUpId.text.toString(),
-                    etSignUpPw.text.toString(),
-                    etSignUpName.text.toString(),
-                    etSignUpFavoriteSong.text.toString()
-                )
+                USER_INFO, viewModel?.getUserInfo()
             )
         }
         setResult(RESULT_OK, intent)

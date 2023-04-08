@@ -9,6 +9,6 @@
     <color name="white">#FFFFFFFF</color>
 
     <!--  pink  -->
-    <color name="pink_200">#FFFFB2FE</color>
+    <color name="pink_200">#FFB2FE</color>
     <color name="pink_500">#E91E63</color>
 </resources>

@@ -35,7 +35,21 @@ class SignViewModel(
             _isCompleteSign.value = true
     }
 
+    fun getUserInfo(): UserInfo {
+        return UserInfo(
+            requireNotNull(inputId.value),
+            requireNotNull(inputPassword.value),
+            inputName.value,
+            inputFavoriteSong.value
+        )
+    }
+
     fun setUserInfo(userInput: UserInfo) {
         this.userInput = userInput
+    }
+
+    fun saveUserInfo() {
+        gsDataStore.userName = inputName.value
+        gsDataStore.userFavoriteSong = inputFavoriteSong.value
     }
 }
