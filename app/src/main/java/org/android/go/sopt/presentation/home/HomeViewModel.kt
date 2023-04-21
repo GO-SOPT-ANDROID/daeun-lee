@@ -1,25 +1,51 @@
 package org.android.go.sopt.presentation.home
 
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import org.android.go.sopt.data.datasource.local.GSDataStore
+import org.android.go.sopt.R
+import org.android.go.sopt.presentation.model.Repo
 
-class HomeViewModel(
-    private val gsDataStore: GSDataStore
-) : ViewModel(
+class HomeViewModel() : ViewModel(
 ) {
-    private var _name = MutableStateFlow("")
-    val name get() = _name.asStateFlow()
-    private var _song = MutableStateFlow("")
-    val song get() = _song.asStateFlow()
-
-    init {
-        setUserInfo()
-    }
-
-    private fun setUserInfo() {
-        _name.value = gsDataStore.userName
-        _song.value = gsDataStore.userFavoriteSong
-    }
+    val mockRepoList = listOf(
+        Repo(
+            image = R.drawable.profile,
+            title = "Keep Go Eat!",
+            author = "Dani43"
+        ),
+        Repo(
+            image = R.drawable.profile,
+            title = "EXIT",
+            author = "Dani43"
+        ),
+        Repo(
+            image = R.drawable.profile,
+            title = "IN-SOPT",
+            author = "Dani43"
+        ),
+        Repo(
+            image = R.drawable.profile,
+            title = "GO-SOPT",
+            author = "Dani43"
+        ),
+        Repo(
+            image = R.drawable.profile,
+            title = "Danini",
+            author = "Dani43"
+        ),
+        Repo(
+            image = R.drawable.profile,
+            title = "shoppi",
+            author = "Dani43"
+        ),
+        Repo(
+            image = R.drawable.profile,
+            title = "Dani",
+            author = "Dani43"
+        ),
+        Repo(
+            image = R.drawable.profile,
+            title = "Dani",
+            author = "Dani43"
+        ),
+    )
 }
