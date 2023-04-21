@@ -6,8 +6,11 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import org.android.go.sopt.R
-import org.android.go.sopt.data.datasource.local.GSDataStore
 import org.android.go.sopt.databinding.ActivitySignInBinding
 import org.android.go.sopt.presentation.common.ViewModelFactory
 import org.android.go.sopt.presentation.home.HomeActivity
@@ -32,6 +35,7 @@ class SignInActivity : AppCompatActivity() {
         checkAutoSignIn()
         setSignUpResult()
         addListener()
+        collectData()
     }
 
     private fun addListener() {
@@ -41,15 +45,18 @@ class SignInActivity : AppCompatActivity() {
         binding.btnSignUp.setOnClickListener {
             moveToSignUp()
         }
-        binding.btnSignIn.setOnClickListener {
-            viewModel.signIn()
-            if (viewModel.isCompleteSign.value) {
-                showToast(getString(R.string.sign_in_success_message))
-                GSDataStore(this).isLogin = true
-                moveToHome()
-            } else
-                showToast(getString(R.string.sign_in_fail_message))
-        }
+    }
+
+    private fun collectData() {
+        viewModel.isCompleteSign.flowWithLifecycle(lifecycle).onEach { isCompleteSign ->
+            isCompleteSign?.let {
+                if (it) {
+                    showToast(getString(R.string.sign_in_success_message))
+                    moveToHome()
+                } else
+                    showToast(getString(R.string.sign_in_fail_message))
+            }
+        }.launchIn(lifecycleScope)
     }
 
     private fun setSignUpResult() {

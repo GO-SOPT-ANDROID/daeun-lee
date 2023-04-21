@@ -31,10 +31,10 @@ class SignUpActivity : AppCompatActivity() {
         }
         binding.btnSignUp.setOnClickListener {
             viewModel.isValid()
-            if (viewModel.isValidSign.value) {
+            if (viewModel.isValidSign.value == true) {
                 viewModel.saveUserInfo()
                 moveToSignIn()
-            } else
+            } else if (viewModel.isValidSign.value == false)
                 it.showSnackBar(getString(R.string.sign_up_fail_message))
         }
     }

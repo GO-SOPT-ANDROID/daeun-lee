@@ -16,10 +16,10 @@ class SignViewModel(
 
     var userInput: UserInfo? = null
 
-    private var _isValidSign = MutableStateFlow(false)
+    private var _isValidSign = MutableStateFlow<Boolean?>(null)
     val isValidSign get() = _isValidSign.asStateFlow()
 
-    private var _isCompleteSign = MutableStateFlow(false)
+    private var _isCompleteSign = MutableStateFlow<Boolean?>(null)
     val isCompleteSign get() = _isCompleteSign.asStateFlow()
 
     private var _isAutoSignIn = MutableStateFlow(gsDataStore.isLogin)
@@ -27,12 +27,15 @@ class SignViewModel(
 
     fun isValid() {
         if (inputId.value.length in 6..10 && inputPassword.value.length in 8..12)
-            _isValidSign.value = true
+            _isValidSign?.value = true
     }
 
     fun signIn() {
-        if (inputId.value == userInput?.id && inputPassword.value == userInput?.password)
+        if (inputId.value == userInput?.id && inputPassword.value == userInput?.password) {
             _isCompleteSign.value = true
+            gsDataStore.isLogin = true
+        } else
+            _isCompleteSign.value = false
     }
 
     fun getUserInfo(): UserInfo {
