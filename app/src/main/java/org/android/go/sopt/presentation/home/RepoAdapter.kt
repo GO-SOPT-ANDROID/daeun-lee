@@ -7,9 +7,13 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import org.android.go.sopt.databinding.ItemRepoBinding
 import org.android.go.sopt.presentation.model.Repo
+import org.android.go.sopt.presentation.util.ItemDiffCallback
 
 class RepoAdapter : ListAdapter<Repo, RepoAdapter.RepoViewHolder>(
-    RepoDiffCallback()
+    ItemDiffCallback<Repo>(
+        onItemsTheSame = {old, new -> old.title == new.title},
+        onContentsTheSame = {old, new -> old == new}
+    )
 ) {
 
     class RepoViewHolder(
@@ -28,15 +32,5 @@ class RepoAdapter : ListAdapter<Repo, RepoAdapter.RepoViewHolder>(
 
     override fun onBindViewHolder(holder: RepoViewHolder, position: Int) {
         holder.onBind(getItem(position))
-    }
-}
-
-class RepoDiffCallback : DiffUtil.ItemCallback<Repo>() {
-    override fun areItemsTheSame(oldItem: Repo, newItem: Repo): Boolean {
-        return oldItem.title == newItem.title
-    }
-
-    override fun areContentsTheSame(oldItem: Repo, newItem: Repo): Boolean {
-        return oldItem == newItem
     }
 }
