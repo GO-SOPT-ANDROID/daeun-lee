@@ -1,51 +1,34 @@
 package org.android.go.sopt.presentation.home
 
 import androidx.lifecycle.ViewModel
-import org.android.go.sopt.R
-import org.android.go.sopt.presentation.model.Repo
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import org.android.go.sopt.data.repository.RepoRepository
+import org.android.go.sopt.domain.model.Repo
+import timber.log.Timber
 
-class HomeViewModel() : ViewModel(
+class HomeViewModel(
+    private val repoRepository: RepoRepository,
+) : ViewModel(
 ) {
-    val mockRepoList = listOf(
-        Repo(
-            image = R.drawable.profile,
-            title = "Keep Go Eat!",
-            author = "Dani43"
-        ),
-        Repo(
-            image = R.drawable.profile,
-            title = "EXIT",
-            author = "Dani43"
-        ),
-        Repo(
-            image = R.drawable.profile,
-            title = "IN-SOPT",
-            author = "Dani43"
-        ),
-        Repo(
-            image = R.drawable.profile,
-            title = "GO-SOPT",
-            author = "Dani43"
-        ),
-        Repo(
-            image = R.drawable.profile,
-            title = "Danini",
-            author = "Dani43"
-        ),
-        Repo(
-            image = R.drawable.profile,
-            title = "shoppi",
-            author = "Dani43"
-        ),
-        Repo(
-            image = R.drawable.profile,
-            title = "Dani",
-            author = "Dani43"
-        ),
-        Repo(
-            image = R.drawable.profile,
-            title = "Dani",
-            author = "Dani43"
-        ),
-    )
+    private var _repoList = MutableStateFlow<List<Repo>>(listOf())
+    val repoList get() = _repoList.asStateFlow()
+
+    init {
+        fetchRepo()
+    }
+
+    private fun fetchRepo() {
+        viewModelScope.launch {
+            repoRepository.fetchRepo()
+                .onSuccess { repoList ->
+                    _repoList.value = repoList
+                }
+                .onFailure { throwable ->
+                    Timber.e(throwable.message)
+                }
+        }
+    }
 }

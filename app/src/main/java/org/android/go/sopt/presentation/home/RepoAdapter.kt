@@ -2,22 +2,21 @@ package org.android.go.sopt.presentation.home
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import org.android.go.sopt.databinding.ItemRepoBinding
-import org.android.go.sopt.presentation.model.Repo
+import org.android.go.sopt.domain.model.Repo
 import org.android.go.sopt.presentation.util.ItemDiffCallback
 
 class RepoAdapter : ListAdapter<Repo, RepoAdapter.RepoViewHolder>(
     ItemDiffCallback<Repo>(
-        onItemsTheSame = {old, new -> old.title == new.title},
-        onContentsTheSame = {old, new -> old == new}
+        onItemsTheSame = { old, new -> old.title == new.title },
+        onContentsTheSame = { old, new -> old == new }
     )
 ) {
 
     class RepoViewHolder(
-        private val binding: ItemRepoBinding
+        private val binding: ItemRepoBinding,
     ) : ViewHolder(binding.root) {
         fun onBind(repo: Repo) {
             binding.repo = repo
