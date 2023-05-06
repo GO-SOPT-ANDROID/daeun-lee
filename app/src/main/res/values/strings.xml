@@ -16,6 +16,5 @@
     <string name="sign_up_fail_message">회원가입에 실패했습니다.</string>
 
     <!--  home  -->
-    <string name="home_name"><b>이름:</b> %s</string>
-    <string name="home_favorite_song"><b>좋아하는 노래:</b> %s</string>
+    <string name="home_header">다니의 레포지토리 💗</string>
 </resources>

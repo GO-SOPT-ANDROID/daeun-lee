@@ -4,6 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import org.android.go.sopt.R
 import org.android.go.sopt.databinding.ActivitySignUpBinding
 import org.android.go.sopt.presentation.common.ViewModelFactory
@@ -23,20 +27,25 @@ class SignUpActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
 
         addListeners()
+        collectData()
     }
 
     private fun addListeners() {
         binding.root.setOnClickListener {
             hideKeyboard(it)
         }
-        binding.btnSignUp.setOnClickListener {
-            viewModel.isValid()
-            if (viewModel.isValidSign.value) {
-                viewModel.saveUserInfo()
-                moveToSignIn()
-            } else
-                it.showSnackBar(getString(R.string.sign_up_fail_message))
-        }
+    }
+
+    private fun collectData() {
+        viewModel.isValidSign.flowWithLifecycle(lifecycle).onEach { isValidSign ->
+            isValidSign?.let {
+                if (it) {
+                    viewModel.saveUserInfo()
+                    moveToSignIn()
+                } else
+                    binding.root.showSnackBar(getString(R.string.sign_up_fail_message))
+            }
+        }.launchIn(lifecycleScope)
     }
 
     private fun moveToSignIn() {
