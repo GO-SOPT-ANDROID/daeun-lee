@@ -16,4 +16,12 @@ class AuthRepository(val authDatasource: AuthDatasource) {
         runCatching {
             authDatasource.signUp(RequestSignUp(id, password, name, skill)).data
         }
+
+    suspend fun signIn(
+        id: String,
+        password: String,
+    ): Result<ResponseSignIn.InfoData> =
+        runCatching {
+            authDatasource.signIn(RequestSignIn(id, password)).data
+        }
 }

@@ -51,11 +51,15 @@ class SignViewModel(
 
     fun signIn() {
         viewModelScope.launch {
-            if (inputId.value == userInput?.id && inputPassword.value == userInput?.password) {
-                _isCompleteSign.value = true
-                gsDataStore.isLogin = true
-            } else
-                _isCompleteSign.value = false
+            authRepository.signIn(inputId.value, inputPassword.value)
+                .onSuccess {
+                    _isCompleteSign.value = true
+                    gsDataStore.isLogin = true
+                }
+                .onFailure { throwable ->
+                    _isCompleteSign.value = false
+                    Timber.e(throwable.message)
+                }
         }
     }
 

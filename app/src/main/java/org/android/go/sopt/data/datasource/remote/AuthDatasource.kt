@@ -11,4 +11,7 @@ class AuthDatasource {
 
     suspend fun signUp(requestSignUp: RequestSignUp): ResponseSignUp =
         authService.signUp(requestSignUp)
+
+    suspend fun signIn(requestSignIn: RequestSignIn): ResponseSignIn =
+        authService.signIn(requestSignIn)
 }
