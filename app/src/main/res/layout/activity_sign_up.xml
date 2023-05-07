@@ -144,7 +144,7 @@
             android:layout_marginHorizontal="20dp"
             android:layout_marginBottom="20dp"
             android:backgroundTint="@color/pink_200"
-            android:onClick="@{()->viewModel.isValid()}"
+            android:onClick="@{()->viewModel.signUp()}"
             android:paddingVertical="10dp"
             android:text="@string/sign_up_success"
             android:textSize="15sp"

@@ -6,10 +6,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.android.go.sopt.data.datasource.local.GSDataStore
+import org.android.go.sopt.data.repository.AuthRepository
 import org.android.go.sopt.presentation.model.UserInfo
+import timber.log.Timber
 
 class SignViewModel(
     private val gsDataStore: GSDataStore,
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
     val inputId = MutableStateFlow("")
     val inputPassword = MutableStateFlow("")
@@ -27,13 +30,22 @@ class SignViewModel(
     private var _isAutoSignIn = MutableStateFlow(gsDataStore.isLogin)
     val isAutoSignIn = _isAutoSignIn.asStateFlow()
 
-    fun isValid() {
+    fun signUp() {
         viewModelScope.launch {
-            if (inputId.value.length in 6..10 && inputPassword.value.length in 8..12)
-                _isValidSign.value = true
-            else {
-                _isValidSign.value = false
-            }
+            authRepository.signUp(
+                inputId.value,
+                inputPassword.value,
+                inputName.value,
+                inputFavoriteSong.value
+            )
+                .onSuccess {
+                    _isValidSign.value =
+                        inputId.value.length in 6..10 && inputPassword.value.length in 8..12
+                                && inputName.value.isNotBlank() && inputFavoriteSong.value.isNotBlank()
+                }
+                .onFailure { throwable ->
+                    Timber.e(throwable.message)
+                }
         }
     }
 
