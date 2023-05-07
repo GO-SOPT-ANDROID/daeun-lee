@@ -7,7 +7,7 @@ class RepoRepository(
     private val repoDatasource: RepoDatasource,
 ) {
     fun fetchRepo(): Result<List<Repo>> =
-        kotlin.runCatching {
+        runCatching {
             repoDatasource.fetchRepoContent().map { repo ->
                 repo.toRepo()
             }

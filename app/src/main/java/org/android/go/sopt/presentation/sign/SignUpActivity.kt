@@ -38,13 +38,12 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun collectData() {
         viewModel.isValidSign.flowWithLifecycle(lifecycle).onEach { isValidSign ->
-            isValidSign?.let {
-                if (it) {
-                    viewModel.saveUserInfo()
-                    moveToSignIn()
-                } else
-                    binding.root.showSnackBar(getString(R.string.sign_up_fail_message))
-            }
+            if (isValidSign == null) return@onEach
+            if (isValidSign) {
+                viewModel.saveUserInfo()
+                moveToSignIn()
+            } else
+                binding.root.showSnackBar(getString(R.string.sign_up_fail_message))
         }.launchIn(lifecycleScope)
     }
 

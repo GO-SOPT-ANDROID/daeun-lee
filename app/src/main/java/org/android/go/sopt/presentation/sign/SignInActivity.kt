@@ -49,13 +49,12 @@ class SignInActivity : AppCompatActivity() {
 
     private fun collectData() {
         viewModel.isCompleteSign.flowWithLifecycle(lifecycle).onEach { isCompleteSign ->
-            isCompleteSign?.let {
-                if (it) {
-                    showToast(getString(R.string.sign_in_success_message))
-                    moveToHome()
-                } else
-                    showToast(getString(R.string.sign_in_fail_message))
-            }
+            if (isCompleteSign == null) return@onEach
+            if (isCompleteSign) {
+                showToast(getString(R.string.sign_in_success_message))
+                moveToHome()
+            } else
+                showToast(getString(R.string.sign_in_fail_message))
         }.launchIn(lifecycleScope)
     }
 
