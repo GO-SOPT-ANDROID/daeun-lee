@@ -5,26 +5,26 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.android.go.sopt.data.repository.RepoRepository
-import org.android.go.sopt.domain.model.Repo
+import org.android.go.sopt.data.repository.FollowerRepository
+import org.android.go.sopt.domain.model.Follower
 import timber.log.Timber
 
 class HomeViewModel(
-    private val repoRepository: RepoRepository,
+    private val followerRepository: FollowerRepository,
 ) : ViewModel(
 ) {
-    private var _repoList = MutableStateFlow<List<Repo>>(listOf())
-    val repoList get() = _repoList.asStateFlow()
+    private var _followerList = MutableStateFlow<List<Follower>>(listOf())
+    val followerList get() = _followerList.asStateFlow()
 
     init {
-        fetchRepo()
+        fetchFollowerList()
     }
 
-    private fun fetchRepo() {
+    private fun fetchFollowerList() {
         viewModelScope.launch {
-            repoRepository.fetchRepo()
-                .onSuccess { repoList ->
-                    _repoList.value = repoList
+            followerRepository.fetchFollowerList()
+                .onSuccess { followerList ->
+                    _followerList.value = followerList
                 }
                 .onFailure { throwable ->
                     Timber.e(throwable.message)

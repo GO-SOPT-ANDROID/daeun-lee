@@ -21,7 +21,8 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField "String", "BASE_URL", properties["BASE_URL"]
+        buildConfigField "String", "AUTH_BASE_URL", properties["AUTH_BASE_URL"]
+        buildConfigField "String", "REQRES_BASE_URL", properties["REQRES_BASE_URL"]
     }
 
     buildTypes {

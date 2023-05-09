@@ -16,7 +16,7 @@ import org.android.go.sopt.presentation.util.binding.BindingFragment
 class HomeFragment : BindingFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     private val viewModel: HomeViewModel by viewModels { ViewModelFactory(requireContext()) }
     private lateinit var headerAdapter: HeaderAdapter
-    private lateinit var repoAdapter: RepoAdapter
+    private lateinit var followerAdapter: FollowerAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -25,14 +25,14 @@ class HomeFragment : BindingFragment<FragmentHomeBinding>(R.layout.fragment_home
     }
 
     private fun collectData() {
-        viewModel.repoList.flowWithLifecycle(lifecycle).onEach { repoList ->
-            repoAdapter.submitList(repoList.toMutableList())
+        viewModel.followerList.flowWithLifecycle(lifecycle).onEach { followerList ->
+            followerAdapter.submitList(followerList.toMutableList())
         }.launchIn(lifecycleScope)
     }
 
     private fun initLayout() {
         headerAdapter = HeaderAdapter()
-        repoAdapter = RepoAdapter()
-        binding.rvHome.adapter = ConcatAdapter(headerAdapter, repoAdapter)
+        followerAdapter = FollowerAdapter()
+        binding.rvHome.adapter = ConcatAdapter(headerAdapter, followerAdapter)
     }
 }
