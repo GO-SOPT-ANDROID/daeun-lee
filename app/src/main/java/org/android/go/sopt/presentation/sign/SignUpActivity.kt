@@ -34,9 +34,9 @@ class SignUpActivity : BindingActivity<ActivitySignUpBinding>(R.layout.activity_
     }
 
     private fun collectData() {
-        viewModel.isValidSign.flowWithLifecycle(lifecycle).onEach { isValidSign ->
-            if (isValidSign == null) return@onEach
-            if (isValidSign) {
+        viewModel.isCompleteSignUp.flowWithLifecycle(lifecycle).onEach { isCompleteSignUp ->
+            if (isCompleteSignUp == null) return@onEach
+            if (isCompleteSignUp) {
                 viewModel.saveUserInfo()
                 moveToSignIn()
             } else

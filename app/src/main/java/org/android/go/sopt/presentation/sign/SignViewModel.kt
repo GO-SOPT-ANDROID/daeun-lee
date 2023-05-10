@@ -2,8 +2,7 @@ package org.android.go.sopt.presentation.sign
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.android.go.sopt.data.datasource.local.GSDataStore
 import org.android.go.sopt.data.repository.AuthRepository
@@ -21,11 +20,16 @@ class SignViewModel(
 
     var userInput: UserInfo? = null
 
-    private var _isValidSign = MutableStateFlow<Boolean?>(null)
-    val isValidSign get() = _isValidSign.asStateFlow()
+    val isValidInput: StateFlow<Boolean> =
+        combine(inputId, inputPassword, inputName, inputFavoriteSong) { id, password, name, favoriteSong ->
+            id.length in 6..10 && password.length in 8..12 && name.isNotBlank() && favoriteSong.isNotBlank()
+        } .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
-    private var _isCompleteSign = MutableStateFlow<Boolean?>(null)
-    val isCompleteSign get() = _isCompleteSign.asStateFlow()
+    private var _isCompleteSignUp = MutableStateFlow<Boolean?>(null)
+    val isCompleteSignUp get() = _isCompleteSignUp.asStateFlow()
+
+    private var _isCompleteSignIn = MutableStateFlow<Boolean?>(null)
+    val isCompleteSignIn get() = _isCompleteSignIn.asStateFlow()
 
     private var _isAutoSignIn = MutableStateFlow(gsDataStore.isLogin)
     val isAutoSignIn = _isAutoSignIn.asStateFlow()
@@ -39,9 +43,7 @@ class SignViewModel(
                 inputFavoriteSong.value
             )
                 .onSuccess {
-                    _isValidSign.value =
-                        inputId.value.length in 6..10 && inputPassword.value.length in 8..12
-                                && inputName.value.isNotBlank() && inputFavoriteSong.value.isNotBlank()
+                    _isCompleteSignUp.value = true
                 }
                 .onFailure { throwable ->
                     Timber.e(throwable.message)
@@ -53,11 +55,11 @@ class SignViewModel(
         viewModelScope.launch {
             authRepository.signIn(inputId.value, inputPassword.value)
                 .onSuccess {
-                    _isCompleteSign.value = true
+                    _isCompleteSignIn.value = true
                     gsDataStore.isLogin = true
                 }
                 .onFailure { throwable ->
-                    _isCompleteSign.value = false
+                    _isCompleteSignIn.value = false
                     Timber.e(throwable.message)
                 }
         }
