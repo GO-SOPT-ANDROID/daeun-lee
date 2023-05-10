@@ -5,10 +5,7 @@ import android.os.Bundle
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import org.android.go.sopt.R
 import org.android.go.sopt.databinding.ActivitySignInBinding
 import org.android.go.sopt.presentation.common.ViewModelFactory
@@ -45,14 +42,17 @@ class SignInActivity : BindingActivity<ActivitySignInBinding>(R.layout.activity_
     }
 
     private fun collectData() {
-        viewModel.isCompleteSign.flowWithLifecycle(lifecycle).onEach { isCompleteSign ->
-            if (isCompleteSign == null) return@onEach
-            if (isCompleteSign) {
-                showToast(getString(R.string.sign_in_success_message))
-                moveToHome()
-            } else
-                showToast(getString(R.string.sign_in_fail_message))
-        }.launchIn(lifecycleScope)
+        lifecycleScope.launchWhenStarted {
+            viewModel.isCompleteSignIn.collect { isCompleteSignIn ->
+                if (isCompleteSignIn == null) return@collect
+                if (isCompleteSignIn) {
+                    showToast(getString(R.string.sign_in_success_message))
+                    moveToHome()
+                } else {
+                    showToast(getString(R.string.sign_in_fail_message))
+                }
+            }
+        }
     }
 
     private fun setSignUpResult() {
