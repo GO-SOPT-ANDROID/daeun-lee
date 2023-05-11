@@ -5,9 +5,12 @@ import org.android.go.sopt.data.model.request.RequestSignIn
 import org.android.go.sopt.data.model.request.RequestSignUp
 import org.android.go.sopt.data.model.response.ResponseSignIn
 import org.android.go.sopt.data.model.response.ResponseSignUp
+import org.android.go.sopt.domain.repository.AuthRepository
+import javax.inject.Inject
 
-class AuthRepository(val authDatasource: AuthDatasource) {
-    suspend fun signUp(
+class AuthRepositoryImpl @Inject constructor(
+    private val authDatasource: AuthDatasource): AuthRepository {
+    override suspend fun signUp(
         id: String,
         password: String,
         name: String,
@@ -17,7 +20,7 @@ class AuthRepository(val authDatasource: AuthDatasource) {
             authDatasource.signUp(RequestSignUp(id, password, name, skill)).data
         }
 
-    suspend fun signIn(
+    override suspend fun signIn(
         id: String,
         password: String,
     ): Result<ResponseSignIn.InfoData> =

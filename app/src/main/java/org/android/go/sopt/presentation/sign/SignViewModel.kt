@@ -2,16 +2,19 @@ package org.android.go.sopt.presentation.sign
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.android.go.sopt.data.datasource.local.GSDataStore
-import org.android.go.sopt.data.repository.AuthRepository
+import org.android.go.sopt.data.repository.AuthRepositoryImpl
 import org.android.go.sopt.presentation.model.UserInfo
 import timber.log.Timber
+import javax.inject.Inject
 
-class SignViewModel(
+@HiltViewModel
+class SignViewModel @Inject constructor(
     private val gsDataStore: GSDataStore,
-    private val authRepository: AuthRepository,
+    private val authRepositoryImpl: AuthRepositoryImpl,
 ) : ViewModel() {
     val inputId = MutableStateFlow("")
     val inputPassword = MutableStateFlow("")
@@ -21,9 +24,14 @@ class SignViewModel(
     var userInput: UserInfo? = null
 
     val isValidInput: StateFlow<Boolean> =
-        combine(inputId, inputPassword, inputName, inputFavoriteSong) { id, password, name, favoriteSong ->
+        combine(
+            inputId,
+            inputPassword,
+            inputName,
+            inputFavoriteSong
+        ) { id, password, name, favoriteSong ->
             id.length in 6..10 && password.length in 8..12 && name.isNotBlank() && favoriteSong.isNotBlank()
-        } .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
     private var _isCompleteSignUp = MutableStateFlow<Boolean?>(null)
     val isCompleteSignUp get() = _isCompleteSignUp.asStateFlow()
@@ -36,7 +44,7 @@ class SignViewModel(
 
     fun signUp() {
         viewModelScope.launch {
-            authRepository.signUp(
+            authRepositoryImpl.signUp(
                 inputId.value,
                 inputPassword.value,
                 inputName.value,
@@ -53,7 +61,7 @@ class SignViewModel(
 
     fun signIn() {
         viewModelScope.launch {
-            authRepository.signIn(inputId.value, inputPassword.value)
+            authRepositoryImpl.signIn(inputId.value, inputPassword.value)
                 .onSuccess {
                     _isCompleteSignIn.value = true
                     gsDataStore.isLogin = true

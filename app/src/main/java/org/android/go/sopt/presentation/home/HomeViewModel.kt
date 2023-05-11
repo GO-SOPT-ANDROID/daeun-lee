@@ -2,15 +2,18 @@ package org.android.go.sopt.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.android.go.sopt.data.repository.FollowerRepository
+import org.android.go.sopt.data.repository.FollowerRepositoryImpl
 import org.android.go.sopt.domain.model.Follower
 import timber.log.Timber
+import javax.inject.Inject
 
-class HomeViewModel(
-    private val followerRepository: FollowerRepository,
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val followerRepositoryImpl: FollowerRepositoryImpl,
 ) : ViewModel(
 ) {
     private var _followerList = MutableStateFlow<List<Follower>>(listOf())
@@ -22,7 +25,7 @@ class HomeViewModel(
 
     private fun fetchFollowerList() {
         viewModelScope.launch {
-            followerRepository.fetchFollowerList()
+            followerRepositoryImpl.fetchFollowerList()
                 .onSuccess { followerList ->
                     _followerList.value = followerList
                 }

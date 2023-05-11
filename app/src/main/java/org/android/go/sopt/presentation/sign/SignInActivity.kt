@@ -6,9 +6,9 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
+import dagger.hilt.android.AndroidEntryPoint
 import org.android.go.sopt.R
 import org.android.go.sopt.databinding.ActivitySignInBinding
-import org.android.go.sopt.presentation.common.ViewModelFactory
 import org.android.go.sopt.presentation.home.HomeActivity
 import org.android.go.sopt.presentation.model.UserInfo
 import org.android.go.sopt.presentation.util.binding.BindingActivity
@@ -16,9 +16,10 @@ import org.android.go.sopt.presentation.util.extension.hideKeyboard
 import org.android.go.sopt.presentation.util.extension.showSnackBar
 import org.android.go.sopt.presentation.util.extension.showToast
 
+@AndroidEntryPoint
 class SignInActivity : BindingActivity<ActivitySignInBinding>(R.layout.activity_sign_in) {
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
-    private val viewModel: SignViewModel by viewModels { ViewModelFactory(this) }
+    private val viewModel: SignViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

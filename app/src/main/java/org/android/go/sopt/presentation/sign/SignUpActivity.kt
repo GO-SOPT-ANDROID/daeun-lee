@@ -5,17 +5,18 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.android.go.sopt.R
 import org.android.go.sopt.databinding.ActivitySignUpBinding
-import org.android.go.sopt.presentation.common.ViewModelFactory
 import org.android.go.sopt.presentation.util.binding.BindingActivity
 import org.android.go.sopt.presentation.util.extension.hideKeyboard
 import org.android.go.sopt.presentation.util.extension.showSnackBar
 
+@AndroidEntryPoint
 class SignUpActivity : BindingActivity<ActivitySignUpBinding>(R.layout.activity_sign_up) {
-    private val viewModel: SignViewModel by viewModels { ViewModelFactory(this) }
+    private val viewModel: SignViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
