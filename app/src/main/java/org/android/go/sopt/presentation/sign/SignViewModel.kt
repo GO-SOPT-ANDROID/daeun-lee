@@ -54,6 +54,7 @@ class SignViewModel @Inject constructor(
                     _isCompleteSignUp.value = true
                 }
                 .onFailure { throwable ->
+                    _isCompleteSignUp.value = false
                     Timber.e(throwable.message)
                 }
         }
