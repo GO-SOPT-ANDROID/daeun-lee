@@ -1,35 +1,24 @@
 package org.android.go.sopt.presentation.home
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.android.go.sopt.R
 import org.android.go.sopt.databinding.FragmentHomeBinding
-import org.android.go.sopt.presentation.common.ViewModelFactory
+import org.android.go.sopt.presentation.util.binding.BindingFragment
 
-class HomeFragment : Fragment() {
-    private var _binding: FragmentHomeBinding? = null
-    private val binding: FragmentHomeBinding
-        get() = requireNotNull(_binding!!) { "${this::class.java.simpleName}에서 에러가 발생했습니다." }
-    private val viewModel: HomeViewModel by viewModels { ViewModelFactory(requireContext()) }
+@AndroidEntryPoint
+class HomeFragment : BindingFragment<FragmentHomeBinding>(R.layout.fragment_home) {
+    private val viewModel: HomeViewModel by viewModels()
     private lateinit var headerAdapter: HeaderAdapter
-    private lateinit var repoAdapter: RepoAdapter
+    private lateinit var followerAdapter: FollowerAdapter
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        return binding.root
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -38,19 +27,14 @@ class HomeFragment : Fragment() {
     }
 
     private fun collectData() {
-        viewModel.repoList.flowWithLifecycle(lifecycle).onEach { repoList ->
-            repoAdapter.submitList(repoList.toMutableList())
+        viewModel.followerList.flowWithLifecycle(lifecycle).onEach { followerList ->
+            followerAdapter.submitList(followerList.toMutableList())
         }.launchIn(lifecycleScope)
     }
 
     private fun initLayout() {
         headerAdapter = HeaderAdapter()
-        repoAdapter = RepoAdapter()
-        binding.rvHome.adapter = ConcatAdapter(headerAdapter, repoAdapter)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+        followerAdapter = FollowerAdapter()
+        binding.rvHome.adapter = ConcatAdapter(headerAdapter, followerAdapter)
     }
 }

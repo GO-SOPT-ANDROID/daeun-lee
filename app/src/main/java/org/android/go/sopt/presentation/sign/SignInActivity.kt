@@ -5,29 +5,24 @@ import android.os.Bundle
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import dagger.hilt.android.AndroidEntryPoint
 import org.android.go.sopt.R
 import org.android.go.sopt.databinding.ActivitySignInBinding
-import org.android.go.sopt.presentation.common.ViewModelFactory
 import org.android.go.sopt.presentation.home.HomeActivity
 import org.android.go.sopt.presentation.model.UserInfo
+import org.android.go.sopt.presentation.util.binding.BindingActivity
 import org.android.go.sopt.presentation.util.extension.hideKeyboard
 import org.android.go.sopt.presentation.util.extension.showSnackBar
 import org.android.go.sopt.presentation.util.extension.showToast
 
-class SignInActivity : AppCompatActivity() {
-    private lateinit var binding: ActivitySignInBinding
+@AndroidEntryPoint
+class SignInActivity : BindingActivity<ActivitySignInBinding>(R.layout.activity_sign_in) {
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
-    private val viewModel: SignViewModel by viewModels { ViewModelFactory(this) }
+    private val viewModel: SignViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySignInBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
@@ -48,15 +43,17 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun collectData() {
-        viewModel.isCompleteSign.flowWithLifecycle(lifecycle).onEach { isCompleteSign ->
-            isCompleteSign?.let {
-                if (it) {
+        lifecycleScope.launchWhenStarted {
+            viewModel.isCompleteSignIn.collect { isCompleteSignIn ->
+                if (isCompleteSignIn == null) return@collect
+                if (isCompleteSignIn) {
                     showToast(getString(R.string.sign_in_success_message))
                     moveToHome()
-                } else
+                } else {
                     showToast(getString(R.string.sign_in_fail_message))
+                }
             }
-        }.launchIn(lifecycleScope)
+        }
     }
 
     private fun setSignUpResult() {

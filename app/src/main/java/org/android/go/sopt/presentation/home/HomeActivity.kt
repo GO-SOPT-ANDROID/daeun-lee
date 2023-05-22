@@ -1,20 +1,19 @@
 package org.android.go.sopt.presentation.home
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import dagger.hilt.android.AndroidEntryPoint
 import org.android.go.sopt.R
 import org.android.go.sopt.databinding.ActivityHomeBinding
 import org.android.go.sopt.presentation.gallery.GalleryFragment
+import org.android.go.sopt.presentation.my.MyFragment
 import org.android.go.sopt.presentation.search.SearchFragment
+import org.android.go.sopt.presentation.util.binding.BindingActivity
 
-class HomeActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityHomeBinding
-
+@AndroidEntryPoint
+class HomeActivity : BindingActivity<ActivityHomeBinding>(R.layout.activity_home) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityHomeBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
         changeFragment(HomeFragment())
 
@@ -24,6 +23,7 @@ class HomeActivity : AppCompatActivity() {
                     R.id.menu_home -> changeFragment(HomeFragment())
                     R.id.menu_gallery -> changeFragment(GalleryFragment())
                     R.id.menu_search -> changeFragment(SearchFragment())
+                    R.id.menu_mypage -> changeFragment(MyFragment())
                 }
                 true
             }

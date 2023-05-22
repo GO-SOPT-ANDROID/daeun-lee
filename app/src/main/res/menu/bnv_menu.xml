@@ -19,4 +19,10 @@
         android:icon="@drawable/ic_search_white"
         android:title="serach"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_mypage"
+        android:enabled="true"
+        android:icon="@drawable/ic_mypage_white"
+        android:title="my"
+        app:showAsAction="ifRoom" />
 </menu>

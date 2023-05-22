@@ -5,9 +5,13 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import dagger.hilt.android.qualifiers.ApplicationContext
 import org.android.go.sopt.BuildConfig
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class GSDataStore(context: Context) {
+@Singleton
+class GSDataStore @Inject constructor(@ApplicationContext context: Context) {
     private val masterKey = MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
         .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
         .build()
@@ -33,6 +37,13 @@ class GSDataStore(context: Context) {
     var userFavoriteSong: String
         set(value) = dataStore.edit { putString(USER_FAVORITE_SONG, value) }
         get() = dataStore.getString(USER_FAVORITE_SONG, "") ?: ""
+
+    fun clear() {
+        dataStore.edit {
+            clear()
+            commit()
+        }
+    }
 
 
     companion object {
