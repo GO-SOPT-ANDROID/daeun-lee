@@ -23,14 +23,23 @@ class SignViewModel @Inject constructor(
 
     var userInput: UserInfo? = null
 
+    val isValidId: StateFlow<Boolean?> = inputId.map {
+        it.matches(Regex(ID_PATTERN))
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
+
+    val isValidPW: StateFlow<Boolean?> = inputPassword.map {
+        it.matches(Regex(PASSWORD_PATTERN))
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
+
+
     val isValidInput: StateFlow<Boolean> =
         combine(
-            inputId,
-            inputPassword,
+            isValidId,
+            isValidPW,
             inputName,
             inputFavoriteSong
-        ) { id, password, name, favoriteSong ->
-            id.length in 6..10 && password.length in 8..12 && name.isNotBlank() && favoriteSong.isNotBlank()
+        ) { isValidId, isValidPassword, name, favoriteSong ->
+            isValidId == true && isValidPassword == true && name.isNotBlank() && favoriteSong.isNotBlank()
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
     private var _isCompleteSignUp = MutableStateFlow<Boolean?>(null)
@@ -91,4 +100,11 @@ class SignViewModel @Inject constructor(
         gsDataStore.userName = inputName.value
         gsDataStore.userFavoriteSong = inputFavoriteSong.value
     }
+
+    companion object {
+        const val ID_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,10}$"
+        const val PASSWORD_PATTERN =
+            "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#\$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{6,12}$"
+    }
+
 }
