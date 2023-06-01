@@ -7,6 +7,10 @@
     <string name="sign_id_hint">아이디를 입력하세요.</string>
     <string name="sign_pw_label">PW</string>
     <string name="sign_pw_hint">비밀번호를 입력하세요.</string>
+    <string name="sing_up_name_label">Name</string>
+    <string name="sign_up_name_hint">이름을 입력하세요.</string>
+    <string name="sign_up_song_label">Favorite</string>
+    <string name="sign_up_song_hint">좋아하는 노래를 입력하세요.</string>
     <string name="sign_in">LOGIN</string>
     <string name="sign_up">SIGN UP</string>
     <string name="sign_up_success">회원가입 완료</string>
@@ -14,6 +18,8 @@
     <string name="sign_in_fail_message">로그인에 실패했습니다.</string>
     <string name="sign_up_success_message">회원가입에 성공했습니다!</string>
     <string name="sign_up_fail_message">회원가입에 실패했습니다.</string>
+    <string name="sign_up_id_error_msg">영문, 숫자 포함 6~10글자 이내만 가능해요.</string>
+    <string name="sign_up_pw_error_msg">영문, 숫자, 특수문자 포함 6~12글자 이내만 가능해요.</string>
 
     <!--  home  -->
     <string name="home_header">다니의 팔로워 💗</string>
