@@ -53,12 +53,24 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="30dp"
                     android:layout_marginTop="10dp"
+                    android:backgroundTint="@{!viewModel.inputId.empty &amp; !viewModel.isValidId ? @color/pink_500 : @color/grey_500}"
                     android:hint="@string/sign_id_hint"
                     android:inputType="text"
                     android:text="@={viewModel.inputId}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_sign_up_id_label" />
+
+                <TextView
+                    android:id="@+id/tv_sign_up_id_error"
+                    visibility="@{!viewModel.inputId.empty &amp; !viewModel.isValidId}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sign_up_id_error_msg"
+                    android:textColor="@color/pink_500"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="@+id/et_sign_up_id"
+                    app:layout_constraintTop_toBottomOf="@+id/et_sign_up_id" />
 
                 <TextView
                     android:id="@+id/tv_sign_up_pw_label"
@@ -77,6 +89,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="30dp"
                     android:layout_marginTop="10dp"
+                    android:backgroundTint="@{!viewModel.inputPassword.empty &amp; !viewModel.isValidPW ? @color/pink_500 : @color/grey_500}"
                     android:hint="@string/sign_pw_hint"
                     android:inputType="textPassword"
                     android:text="@={viewModel.inputPassword}"
@@ -85,12 +98,23 @@
                     app:layout_constraintTop_toBottomOf="@id/tv_sign_up_pw_label" />
 
                 <TextView
+                    android:id="@+id/tv_sign_up_pw_error"
+                    visibility="@{!viewModel.inputPassword.empty &amp; !viewModel.isValidPW}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sign_up_pw_error_msg"
+                    android:textColor="@color/pink_500"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="@+id/et_sign_up_id"
+                    app:layout_constraintTop_toBottomOf="@+id/et_sign_up_pw" />
+
+                <TextView
                     android:id="@+id/tv_sign_up_name_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="30dp"
                     android:layout_marginTop="30dp"
-                    android:text="Name"
+                    android:text="@string/sing_up_name_label"
                     android:textSize="20sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/et_sign_up_pw" />
@@ -101,7 +125,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="30dp"
                     android:layout_marginTop="10dp"
-                    android:hint="이름을 입력하세요."
+                    android:backgroundTint="@color/grey_500"
+                    android:hint="@string/sign_up_name_hint"
                     android:inputType="text"
                     android:text="@={viewModel.inputName}"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -114,7 +139,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="30dp"
                     android:layout_marginTop="30dp"
-                    android:text="Favorite"
+                    android:text="@string/sign_up_song_label"
                     android:textSize="20sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/et_sign_up_name" />
@@ -126,7 +151,8 @@
                     android:layout_marginHorizontal="30dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="40dp"
-                    android:hint="좋아하는 노래를 입력하세요."
+                    android:backgroundTint="@color/grey_500"
+                    android:hint="@string/sign_up_song_hint"
                     android:inputType="text"
                     android:text="@={viewModel.inputFavoriteSong}"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -137,20 +163,20 @@
 
         </ScrollView>
 
-        <com.google.android.material.button.MaterialButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_sign_up"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
             android:layout_marginBottom="20dp"
-            android:backgroundTint="@color/pink_200"
+            android:background="@drawable/selector_sign_up_button"
             android:enabled="@{viewModel.isValidInput}"
             android:onClick="@{()->viewModel.signUp()}"
             android:paddingVertical="10dp"
             android:text="@string/sign_up_success"
+            android:textColor="@color/white"
             android:textSize="15sp"
             android:textStyle="bold"
-            app:cornerRadius="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
