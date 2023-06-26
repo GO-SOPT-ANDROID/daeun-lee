@@ -5,8 +5,11 @@ import android.os.Bundle
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import org.android.go.sopt.R
 import org.android.go.sopt.databinding.ActivitySignInBinding
 import org.android.go.sopt.presentation.home.HomeActivity
@@ -43,17 +46,13 @@ class SignInActivity : BindingActivity<ActivitySignInBinding>(R.layout.activity_
     }
 
     private fun collectData() {
-        lifecycleScope.launchWhenStarted {
-            viewModel.isCompleteSignIn.collect { isCompleteSignIn ->
-                if (isCompleteSignIn == null) return@collect
-                if (isCompleteSignIn) {
-                    showToast(getString(R.string.sign_in_success_message))
-                    moveToHome()
-                } else {
-                    showToast(getString(R.string.sign_in_fail_message))
-                }
-            }
-        }
+        viewModel.isCompleteSignIn.flowWithLifecycle(lifecycle).onEach { isCompleteSignIn ->
+            if (isCompleteSignIn) {
+                showToast(getString(R.string.sign_in_success_message))
+                moveToHome()
+            } else
+                showToast(getString(R.string.sign_in_fail_message))
+        }.launchIn(lifecycleScope)
     }
 
     private fun setSignUpResult() {

@@ -42,11 +42,11 @@ class SignViewModel @Inject constructor(
             isValidId == true && isValidPassword == true && name.isNotBlank() && favoriteSong.isNotBlank()
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
-    private var _isCompleteSignUp = MutableStateFlow<Boolean?>(null)
-    val isCompleteSignUp get() = _isCompleteSignUp.asStateFlow()
+    private var _isCompleteSignUp = MutableSharedFlow<Boolean>()
+    val isCompleteSignUp get() = _isCompleteSignUp.asSharedFlow()
 
-    private var _isCompleteSignIn = MutableStateFlow<Boolean?>(null)
-    val isCompleteSignIn get() = _isCompleteSignIn.asStateFlow()
+    private var _isCompleteSignIn = MutableSharedFlow<Boolean>()
+    val isCompleteSignIn get() = _isCompleteSignIn.asSharedFlow()
 
     private var _isAutoSignIn = MutableStateFlow(gsDataStore.isLogin)
     val isAutoSignIn = _isAutoSignIn.asStateFlow()
@@ -60,10 +60,10 @@ class SignViewModel @Inject constructor(
                 inputFavoriteSong.value
             )
                 .onSuccess {
-                    _isCompleteSignUp.value = true
+                    _isCompleteSignUp.emit(true)
                 }
                 .onFailure { throwable ->
-                    _isCompleteSignUp.value = false
+                    _isCompleteSignUp.emit(false)
                     Timber.e(throwable.message)
                 }
         }
@@ -73,11 +73,11 @@ class SignViewModel @Inject constructor(
         viewModelScope.launch {
             authRepositoryImpl.signIn(inputId.value, inputPassword.value)
                 .onSuccess {
-                    _isCompleteSignIn.value = true
+                    _isCompleteSignIn.emit(true)
                     gsDataStore.isLogin = true
                 }
                 .onFailure { throwable ->
-                    _isCompleteSignIn.value = false
+                    _isCompleteSignIn.emit(false)
                     Timber.e(throwable.message)
                 }
         }
