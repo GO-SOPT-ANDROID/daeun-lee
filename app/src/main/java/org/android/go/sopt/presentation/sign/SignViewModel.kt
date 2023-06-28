@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 import org.android.go.sopt.data.datasource.local.GSDataStore
 import org.android.go.sopt.data.repository.AuthRepositoryImpl
 import org.android.go.sopt.presentation.model.UserInfo
-import timber.log.Timber
+import org.android.go.sopt.presentation.util.UiState
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,11 +42,11 @@ class SignViewModel @Inject constructor(
             isValidId == true && isValidPassword == true && name.isNotBlank() && favoriteSong.isNotBlank()
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
-    private var _isCompleteSignUp = MutableSharedFlow<Boolean>()
-    val isCompleteSignUp get() = _isCompleteSignUp.asSharedFlow()
+    private val _signUpUiState = MutableSharedFlow<UiState<Boolean>>()
+    val signUpUiState get() = _signUpUiState.asSharedFlow()
 
-    private var _isCompleteSignIn = MutableSharedFlow<Boolean>()
-    val isCompleteSignIn get() = _isCompleteSignIn.asSharedFlow()
+    private val _signInUiState = MutableSharedFlow<UiState<Boolean>>()
+    val signInUiState get() = _signInUiState.asSharedFlow()
 
     private var _isAutoSignIn = MutableStateFlow(gsDataStore.isLogin)
     val isAutoSignIn = _isAutoSignIn.asStateFlow()
@@ -60,11 +60,10 @@ class SignViewModel @Inject constructor(
                 inputFavoriteSong.value
             )
                 .onSuccess {
-                    _isCompleteSignUp.emit(true)
+                    _signUpUiState.emit(UiState.Success(true))
                 }
                 .onFailure { throwable ->
-                    _isCompleteSignUp.emit(false)
-                    Timber.e(throwable.message)
+                    _signUpUiState.emit(UiState.Error(throwable.message))
                 }
         }
     }
@@ -73,12 +72,11 @@ class SignViewModel @Inject constructor(
         viewModelScope.launch {
             authRepositoryImpl.signIn(inputId.value, inputPassword.value)
                 .onSuccess {
-                    _isCompleteSignIn.emit(true)
+                    _signInUiState.emit(UiState.Success(true))
                     gsDataStore.isLogin = true
                 }
                 .onFailure { throwable ->
-                    _isCompleteSignIn.emit(false)
-                    Timber.e(throwable.message)
+                    _signInUiState.emit(UiState.Error(throwable.message))
                 }
         }
     }

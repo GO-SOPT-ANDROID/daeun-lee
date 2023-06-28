@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.android.go.sopt.R
 import org.android.go.sopt.databinding.ActivitySignUpBinding
+import org.android.go.sopt.presentation.util.UiState
 import org.android.go.sopt.presentation.util.binding.BindingActivity
 import org.android.go.sopt.presentation.util.extension.hideKeyboard
 import org.android.go.sopt.presentation.util.extension.showSnackBar
@@ -35,12 +36,17 @@ class SignUpActivity : BindingActivity<ActivitySignUpBinding>(R.layout.activity_
     }
 
     private fun collectData() {
-        viewModel.isCompleteSignUp.flowWithLifecycle(lifecycle).onEach { isCompleteSignUp ->
-            if (isCompleteSignUp) {
-                viewModel.saveUserInfo()
-                moveToSignIn()
-            } else
-                binding.root.showSnackBar(getString(R.string.sign_up_fail_message))
+        viewModel.signUpUiState.flowWithLifecycle(lifecycle).onEach {
+            when (it) {
+                is UiState.Success -> {
+                    viewModel.saveUserInfo()
+                    moveToSignIn()
+                }
+                is UiState.Error -> {
+                    binding.root.showSnackBar(getString(R.string.sign_up_fail_message))
+                }
+                else -> {}
+            }
         }.launchIn(lifecycleScope)
     }
 
