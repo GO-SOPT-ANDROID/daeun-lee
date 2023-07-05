@@ -16,3 +16,4 @@ abstract class BindingActivity<B : ViewDataBinding>(@LayoutRes private val layou
     }
 
 }
+
