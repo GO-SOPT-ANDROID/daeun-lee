@@ -5,12 +5,16 @@ import android.os.Bundle
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import org.android.go.sopt.R
 import org.android.go.sopt.databinding.ActivitySignInBinding
 import org.android.go.sopt.presentation.home.HomeActivity
 import org.android.go.sopt.presentation.model.UserInfo
+import org.android.go.sopt.presentation.util.UiState
 import org.android.go.sopt.presentation.util.binding.BindingActivity
 import org.android.go.sopt.presentation.util.extension.hideKeyboard
 import org.android.go.sopt.presentation.util.extension.showSnackBar
@@ -43,17 +47,18 @@ class SignInActivity : BindingActivity<ActivitySignInBinding>(R.layout.activity_
     }
 
     private fun collectData() {
-        lifecycleScope.launchWhenStarted {
-            viewModel.isCompleteSignIn.collect { isCompleteSignIn ->
-                if (isCompleteSignIn == null) return@collect
-                if (isCompleteSignIn) {
+        viewModel.signInUiState.flowWithLifecycle(lifecycle).onEach {
+            when (it) {
+                is UiState.Success -> {
                     showToast(getString(R.string.sign_in_success_message))
                     moveToHome()
-                } else {
+                }
+                is UiState.Error -> {
                     showToast(getString(R.string.sign_in_fail_message))
                 }
+                else -> {}
             }
-        }
+        }.launchIn(lifecycleScope)
     }
 
     private fun setSignUpResult() {
