@@ -14,6 +14,7 @@ import org.android.go.sopt.R
 import org.android.go.sopt.databinding.ActivitySignInBinding
 import org.android.go.sopt.presentation.home.HomeActivity
 import org.android.go.sopt.presentation.model.UserInfo
+import org.android.go.sopt.presentation.util.UiState
 import org.android.go.sopt.presentation.util.binding.BindingActivity
 import org.android.go.sopt.presentation.util.extension.hideKeyboard
 import org.android.go.sopt.presentation.util.extension.showSnackBar
@@ -46,12 +47,17 @@ class SignInActivity : BindingActivity<ActivitySignInBinding>(R.layout.activity_
     }
 
     private fun collectData() {
-        viewModel.isCompleteSignIn.flowWithLifecycle(lifecycle).onEach { isCompleteSignIn ->
-            if (isCompleteSignIn) {
-                showToast(getString(R.string.sign_in_success_message))
-                moveToHome()
-            } else
-                showToast(getString(R.string.sign_in_fail_message))
+        viewModel.signInUiState.flowWithLifecycle(lifecycle).onEach {
+            when (it) {
+                is UiState.Success -> {
+                    showToast(getString(R.string.sign_in_success_message))
+                    moveToHome()
+                }
+                is UiState.Error -> {
+                    showToast(getString(R.string.sign_in_fail_message))
+                }
+                else -> {}
+            }
         }.launchIn(lifecycleScope)
     }
 
