@@ -15,3 +15,4 @@ abstract class BindingActivity<B : ViewDataBinding>(@LayoutRes private val layou
         binding = DataBindingUtil.setContentView(this, layoutResId)
     }
 }
+
